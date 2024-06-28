@@ -1,0 +1,92 @@
+.text-center {
+    color: #006633; /* GMU Green */
+    display: flex;
+    align-items: flex-end;
+}
+h2 {
+    color: #006633; /* GMU Green */
+}
+  
+.border-box {
+    border: 5px solid #006633; /* GMU Green */
+    padding: 20px;
+    box-shadow: 5px 5px 10px #888888; /* Box shadow */
+}
+.title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+body {
+    background-color: #f8f9fa; /* Light gray */
+}
+.intro {
+    padding: 20px 0px 0px 20px;
+}
+.intro-title{
+    background-color: #FFCC33;
+    padding: 10px 20px
+}
+.degrees{
+    padding: 20px 0px 0px 20px;
+}
+.degree-title{
+    background-color: #FFCC33;
+    padding: 10px 20px
+}
+
+.degree-list {
+    list-style: none;
+    padding: 20px 0px 0px 20px;
+}
+
+.degree-item {
+    font-size: 15px;
+
+    margin-bottom: 10px;
+}
+
+.degree-item a {
+    font-size: 20px;
+
+    text-decoration: none;
+    color: #333; /* Dark gray */
+    font-weight: bold;
+}
+
+.degree-item a:hover {
+    color: #006633; /* GMU Green */
+}
+.survey {
+    padding: 20px 0px 0px 20px;
+
+}
+.survey-title {
+    background-color: #006633;
+    color: #FFCC33;
+    padding: 10px 20px
+}
+.footer {
+    background-color: #006633; /* Light gray */
+    padding: 50px;
+    text-align: center;
+}
+.done-title-bg{
+    background-color: #006633 ;
+    color: #FFCC33;
+    padding: 20px 20px 20px 20px;
+
+}
+.return-to{
+    font-size: 20px;
+    color: #333;
+}
+.return-to a:hover {
+    color: #006633; /* GMU Green */
+
+}
+.invalid-input {
+    border: 2px solid red; /* Red border for invalid fields */
+  }
+  

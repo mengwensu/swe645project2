@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CS Department Survey</title>
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body style="background-color: lightgray" onload="displayGreeting()">
+    <div class="container" style="padding-top: 20px; padding-bottom: 20px">
+      <h1 class="survey-title">CS Department Survey</h1>
+      <div id="greeting"></div>
+      <form
+        id="surveyForm"
+        action="done.html"
+        method="get"
+        onsubmit="return validateForm()"
+      >
+        <!-- User Information -->
+        <div class="form-group">
+          <label for="username">Username<span>*</span>:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            name="username"
+            required
+            autofocus
+          />
+        </div>
+        <div class="form-group">
+          <label for="address">Street Address<span>*</span>:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="address"
+            name="address"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="city">City<span>*</span>:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="city"
+            name="city"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="state">State<span>*</span>:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="state"
+            name="state"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="zip">Zipcode<span>*</span>:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="zip"
+            name="zip"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="phone">Telephone Number<span>*</span>:</label>
+          <input
+            type="tel"
+            class="form-control"
+            placeholder="XXX-XXX-XXXX"
+            id="phone"
+            name="phone"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="email">Email<span>*</span>:</label>
+          <input
+            type="email"
+            class="form-control"
+            placeholder="example@gmail.com"
+            id="email"
+            name="email"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="url">URL:</label>
+          <input type="url" class="form-control" id="url" name="url" />
+        </div>
+        <div class="form-group">
+          <label for="date">Date of Survey<span>*</span>:</label>
+          <input
+            type="date"
+            class="form-control"
+            id="date"
+            name="date"
+            required
+          />
+        </div>
+
+        <!-- Survey Questions -->
+        <div class="form-group">
+          <label for="liked"
+            >What did you like most about the campus?<span>*</span></label
+          ><br />
+          <div class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="liked_students"
+              name="liked_students"
+            />
+            <label class="form-check-label" for="liked_students"
+              >Students</label
+            >
+          </div>
+          <div class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="liked_location"
+              name="liked_location"
+            />
+            <label class="form-check-label" for="liked_location"
+              >Location</label
+            >
+          </div>
+          <div class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="liked_campus"
+              name="liked_campus"
+            />
+            <label class="form-check-label" for="liked_campus">Campus</label>
+          </div>
+          <div class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="liked_atmosphere"
+              name="liked_atmosphere"
+            />
+            <label class="form-check-label" for="liked_atmosphere"
+              >Atmosphere</label
+            >
+          </div>
+          <div class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="liked_dorms"
+              name="liked_dorms"
+            />
+            <label class="form-check-label" for="liked_dorms">Dorm Rooms</label>
+          </div>
+          <div class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="liked_sports"
+              name="liked_sports"
+            />
+            <label class="form-check-label" for="liked_sports">Sports</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="interest"
+            >How did you become interested in the university?<span
+              >*</span
+            ></label
+          ><br />
+          <div class="form-check">
+            <input
+              type="radio"
+              class="form-check-input"
+              id="interest_friends"
+              name="interest"
+              value="friends"
+              required
+            />
+            <label class="form-check-label" for="interest_friends"
+              >Friends</label
+            >
+          </div>
+          <div class="form-check">
+            <input
+              type="radio"
+              class="form-check-input"
+              id="interest_tv"
+              name="interest"
+              value="television"
+              required
+            />
+            <label class="form-check-label" for="interest_tv">Television</label>
+          </div>
+          <div class="form-check">
+            <input
+              type="radio"
+              class="form-check-input"
+              id="interest_internet"
+              name="interest"
+              value="internet"
+              required
+            />
+            <label class="form-check-label" for="interest_internet"
+              >Internet</label
+            >
+          </div>
+          <div class="form-check">
+            <input
+              type="radio"
+              class="form-check-input"
+              id="interest_other"
+              name="interest"
+              value="other"
+              required
+            />
+            <label class="form-check-label" for="interest_other">Other</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="comments">Additional Comments:</label><br />
+          <textarea
+            id="comments"
+            class="form-control"
+            name="comments"
+            rows="4"
+          ></textarea>
+        </div>
+
+        <!-- High School / Recommendation Informations -->
+        <div class="form-group">
+          <label for="graduation_month"
+            >High School Graduation Month<span>*</span>:</label
+          >
+          <select
+            class="form-control"
+            id="graduation_month"
+            name="graduation_month"
+            required
+          >
+            <option value="" disabled selected>Select a Month</option>
+            <option value="January">January</option>
+            <option value="February">February</option>
+            <option value="March">March</option>
+            <option value="April">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="July">July</option>
+            <option value="August">August</option>
+            <option value="September">September</option>
+            <option value="October">October</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="graduation_year"
+            >High School Graduation Year<span>*</span>:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            placeholder="YYYY"
+            id="graduation_year"
+            name="graduation_year"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="recommend"
+            >Likelihood of Recommending<span>*</span>:</label
+          >
+          <select id="recommend" class="form-control" name="recommend" required>
+            <option value="" disabled selected>Choose an option</option>
+            <option value="very_likely">Very Likely</option>
+            <option value="likely">Likely</option>
+            <option value="unlikely">Unlikely</option>
+          </select>
+        </div>
+
+        <!-- New Section for Data Field, Average and Maximum Output -->
+        <div class="form-group">
+          <label for="raffle"
+            >Raffle (Enter ten comma-separated numbers from 1 through
+            100):</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="raffle"
+            name="raffle"
+            placeholder="Ex: 1,2,3,4,5,6,7,8,9,10"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="data"
+            >Data (Enter ten comma-separated numbers from 1 through 100):</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="data"
+            name="data"
+            placeholder="Ex: 1,2,3,4,5,6,7,8,9,10"
+            required
+            onchange="calculateAverageAndMaximum()"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="average">Average:</label>
+          <output class="form-control" id="average"></output>
+        </div>
+
+        <div class="form-group">
+          <label for="maximum">Maximum:</label>
+          <output class="form-control" id="maximum"></output>
+        </div>
+
+        <button type="button" class="btn btn-secondary" onclick="cancelForm()">
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="btn btn-primary"
+          onclick="return validateForm()"
+        >
+          Submit
+        </button>
+        <script src="zip_auto.js">
+                    // zipcode-autocomplete.js
+
+          // Function to perform AJAX request
+          function fetchZipcodeData(zipcode) {
+              // Construct the URL to your JSON file
+              var url = 'zipcodes.json'; // Replace with your actual JSON file path
+
+              // Perform AJAX request
+              var xhr = new XMLHttpRequest();
+              xhr.open('GET', url, true);
+              xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                  var data = JSON.parse(xhr.responseText);
+                  handleZipcodeData(data, zipcode);
+                }
+              };
+              xhr.send();
+            }
+
+            // Function to handle the retrieved data
+            function handleZipcodeData(data, zipcode) {
+              var found = false;
+              for (var i = 0; i < data.zipcodes.length; i++) {
+                if (data.zipcodes[i].zip === zipcode) {
+                  document.getElementById('city').value = data.zipcodes[i].city;
+                  document.getElementById('state').value = data.zipcodes[i].state;
+                  found = true;
+                  break;
+                }
+              }
+              if (!found) {
+                alert('Invalid zip code');
+              }
+            }
+
+            // Event listener for the zip code input field
+            document.getElementById('zip').addEventListener('blur', function() {
+            var zipcode = this.value.trim();
+            if (zipcode.length === 5 && /^\d+$/.test(zipcode)) {
+              fetchZipcodeData(zipcode);
+            } else {
+              alert('Zip code should be exactly 5 digits');
+            }
+          });
+        </script>
+
+        <button type="reset" class="btn btn-danger">Reset</button>
+      </form>
+    </div>
+    <div class="footer"></div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+      function cancelForm() {
+        window.location.href = "cancel.html"; // Redirect to cancel.html
+      }
+
+      function validateForm() {
+        var username = document.getElementById("username").value.trim();
+        var address = document.getElementById("address").value.trim();
+        var city = document.getElementById("city").value.trim();
+        var state = document.getElementById("state").value.trim();
+        var zip = document.getElementById("zip").value.trim();
+        var phone = document.getElementById("phone").value.trim();
+        var email = document.getElementById("email").value.trim();
+        var url = document.getElementById("url").value.trim();
+        var date = document.getElementById("date").value.trim();
+        var liked_students = document.getElementById("liked_students").checked;
+        var liked_location = document.getElementById("liked_location").checked;
+        var liked_campus = document.getElementById("liked_campus").checked;
+        var liked_atmosphere =
+          document.getElementById("liked_atmosphere").checked;
+        var liked_dorms = document.getElementById("liked_dorms").checked;
+        var liked_sports = document.getElementById("liked_sports").checked;
+        var interest_friends =
+          document.getElementById("interest_friends").checked;
+        var interest_tv = document.getElementById("interest_tv").checked;
+        var interest_internet =
+          document.getElementById("interest_internet").checked;
+        var interest_other = document.getElementById("interest_other").checked;
+        var graduation_month = document
+          .getElementById("graduation_month")
+          .value.trim();
+        var graduation_year = document
+          .getElementById("graduation_year")
+          .value.trim();
+        var recommend = document.getElementById("recommend").value.trim();
+        var raffle = document.getElementById("raffle").value.trim();
+        var data = document.getElementById("data").value.trim();
+
+        // Validation checks
+        var errors = [];
+
+        if (!/^[a-zA-Z0-9\s]+$/.test(address)) {
+          errors.push("Address should contain only alphanumeric characters.");
+        }
+
+        if (!/^[a-zA-Z0-9\s]+$/.test(city)) {
+          errors.push("City should contain only alphanumeric characters.");
+        }
+
+        if (!/^[a-zA-Z\s]+$/.test(state)) {
+          errors.push("State should contain only alphabets.");
+        }
+
+        if (!/^\d{5}$/.test(zip)) {
+          errors.push("Zipcode should be exactly 5 digits.");
+        }
+
+        if (!/^\d{3}-\d{3}-\d{4}$/.test(phone)) {
+          errors.push("Phone number should be in the format XXX-XXX-XXXX.");
+        }
+
+        if (!/^[\w.-]+@[a-zA-Z]+\.[a-zA-Z]{2,3}$/.test(email)) {
+          errors.push("Email address format is invalid.");
+        }
+
+        if (url !== "" && !isValidUrl(url)) {
+          errors.push("URL format is invalid.");
+        }
+
+        if (!date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+          errors.push("Date of Survey should be in the format YYYY-MM-DD.");
+        }
+
+        if (
+          !(
+            liked_students ||
+            liked_location ||
+            liked_campus ||
+            liked_atmosphere ||
+            liked_dorms ||
+            liked_sports
+          )
+        ) {
+          errors.push(
+            "Please select at least two checkboxes for what you liked most about the campus."
+          );
+        }
+
+        if (
+          !(
+            interest_friends ||
+            interest_tv ||
+            interest_internet ||
+            interest_other
+          )
+        ) {
+          errors.push(
+            "Please select an option for how you became interested in the university."
+          );
+        }
+
+        if (graduation_month === "") {
+          errors.push("Please select a High School Graduation Month.");
+        }
+
+        if (!graduation_year.match(/^\d{4}$/)) {
+          errors.push(
+            "High School Graduation Year should be exactly 4 digits."
+          );
+        }
+
+        if (recommend === "") {
+          errors.push(
+            "Please select an option for Likelihood of Recommending."
+          );
+        }
+
+        if (!validateRaffle(raffle)) {
+          errors.push(
+            "Raffle numbers should be ten comma-separated numbers between 1 and 100."
+          );
+        }
+
+        if (!validateData(data)) {
+          errors.push(
+            "Data numbers should be ten comma-separated numbers between 1 and 100."
+          );
+        }
+
+        // Display errors or submit form
+        if (errors.length > 0) {
+          alert(errors.join("\n"));
+          return false; // Prevent form submission
+        } else {
+          return true; // Submit form
+        }
+      }
+
+      function isValidUrl(url) {
+        var pattern = new RegExp(
+          "^(https?:\\/\\/)?" + // protocol
+            "((([a-zA-Z\\d]([a-zA-Z\\d-]{0,61}[a-zA-Z\\d])?\\.)+[a-zA-Z]{2,})|" + // domain name
+            "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+            "(\\:\\d+)?(\\/[-a-zA-Z\\d%_.~+]*)*" + // port and path
+            "(\\?[;&a-zA-Z\\d%_.~+=-]*)?" + // query string
+            "(\\#[-a-zA-Z\\d_]*)?$",
+          "i"
+        ); // fragment locator
+        return !!pattern.test(url);
+      }
+
+      function validateRaffle(raffle) {
+        var numbers = raffle.split(",");
+        if (numbers.length !== 10) {
+          return false;
+        }
+        for (var i = 0; i < numbers.length; i++) {
+          var num = parseInt(numbers[i].trim(), 10);
+          if (isNaN(num) || num < 1 || num > 100) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      function validateData(data) {
+        var numbers = data.split(",");
+        if (numbers.length !== 10) {
+          return false;
+        }
+        for (var i = 0; i < numbers.length; i++) {
+          var num = parseInt(numbers[i].trim(), 10);
+          if (isNaN(num) || num < 1 || num > 100) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      function calculateAverageAndMaximum() {
+        var dataInput = document.getElementById("data").value.trim();
+        var numbers = dataInput.split(",").map(function (item) {
+          return parseInt(item.trim(), 10);
+        });
+
+        // Validate numbers
+        if (numbers.length !== 10) {
+          alert("Please enter exactly ten numbers separated by commas.");
+          return;
+        }
+
+        for (var i = 0; i < numbers.length; i++) {
+          if (isNaN(numbers[i]) || numbers[i] < 1 || numbers[i] > 100) {
+            alert("Please enter numbers between 1 and 100.");
+            return;
+          }
+        }
+
+        // Calculate average
+        var sum = numbers.reduce(function (acc, val) {
+          return acc + val;
+        }, 0);
+        var average = sum / numbers.length;
+
+        // Calculate maximum
+        var maximum = Math.max(...numbers);
+
+        // Display results
+        document.getElementById("average").value = average.toFixed(2);
+        document.getElementById("maximum").value = maximum;
+      }
+
+      function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+      }
+
+      function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(";");
+        for (var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == " ") {
+            c = c.substring(1); // Added missing closing parenthesis here
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
+        }
+        return "";
+      }
+
+      function checkCookie() {
+        var user = getCookie("username");
+        if (user != "" && /^[A-Za-z]+$/.test(user)) {
+          // Check if user is not empty and contains only alphabets
+          return user;
+        } else {
+          user = prompt("Please enter your name (only alphabets allowed):");
+          if (user != "" && user != null && /^[A-Za-z]+$/.test(user)) {
+            // Check if user input is not empty, not null, and contains only alphabets
+            setCookie("username", user, 365);
+          } else {
+            alert(
+              "Invalid input. Please enter a valid name with only alphabets."
+            );
+            user = checkCookie(); // Prompt again if input is invalid
+          }
+          return user;
+        }
+      }
+
+      function displayGreeting() {
+        var user = checkCookie();
+        var greetingElement = document.getElementById("greeting");
+        if (user != "" && user != null) {
+          var now = new Date();
+          var hours = now.getHours();
+          var greeting;
+          if (hours < 12) {
+            greeting = "Good Morning";
+          } else if (hours < 18) {
+            greeting = "Good Afternoon";
+          } else {
+            greeting = "Good Evening";
+          }
+          greetingElement.innerHTML = `<h2>${greeting} ${user}, welcome to SWE642 Survey</h2>`;
+        } else {
+          greetingElement.innerHTML =
+            '<a href="#" onclick="setUserName()">Enter your name</a>';
+        }
+      }
+
+      function setUserName() {
+        var user = prompt("Please enter your name:");
+        if (user != "" && user != null) {
+          setCookie("username", user, 365);
+          location.reload();
+        }
+      }
+    </script>
+  </body>
+</html>
