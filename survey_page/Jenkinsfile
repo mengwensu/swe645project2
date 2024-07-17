@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+    environment {
+        DOCKERHUB_PASS = credentials('docker-pass')
+    }
+    stages {
+        stage("Checkout Code") {
+            steps {
+                script {
+                    checkout scm
+                }
+            }
+        }
+        stage("Build Docker Image") {
+            steps {
+                script {
+                    def timestamp = currentBuild.startTimeInMillis
+                    sh "docker login -u mengwensu -p ${DOCKERHUB_PASS}"
+                    def customImage = docker.build("mengwensu/msu5swe645project2:0.2-${timestamp}")
+                }
+            }
+        }
+        stage("Push Docker Image") {
+            steps {
+                script {
+                    def timestamp = currentBuild.startTimeInMillis
+                    sh "docker push mengwensu/msu5swe645project2:0.2-${timestamp}"
+                }
+            }
+        }
+        stage("Deploy to Rancher (Single Pod)") {
+            steps {
+                script {
+                    def timestamp = currentBuild.startTimeInMillis
+                    sh "kubectl set image deployment/swe645project2-pipeline swe645project2-pipeline=mengwensu/msu5swe645project2:0.2-${timestamp} -n jenkins-pipeline"
+                }
+            }
+        }
+        stage("Deploy to Rancher (Load Balancer)") {
+            steps {
+                script {
+                    def timestamp = currentBuild.startTimeInMillis
+                    sh "kubectl set image deployment/msu5swe645project2-lb msu5swe645project2-lb=mengwensu/msu5swe645project2:0.2-${timestamp} -n jenkins-pipeline"
+                }
+            }
+        }
+    }
+}

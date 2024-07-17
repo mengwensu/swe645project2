@@ -1,0 +1,231 @@
+Last login: Tue Jul  9 15:48:41 on ttys002
+mengwensu@Mengs-MacBook-Air ~ % cd Desktop 
+mengwensu@Mengs-MacBook-Air Desktop % ssh -i "p2-key.pem" ubuntu@ec2-52-207-23-41.compute-1.amazonaws.com
+Welcome to Ubuntu 24.04 LTS (GNU/Linux 6.8.0-1009-aws x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Wed Jul 10 18:15:04 UTC 2024
+
+  System load:  0.0               Temperature:           -273.1 C
+  Usage of /:   6.5% of 28.02GB   Processes:             110
+  Memory usage: 3%                Users logged in:       0
+  Swap usage:   0%                IPv4 address for ens5: 172.31.1.87
+
+ * Ubuntu Pro delivers the most comprehensive open source security and
+   compliance features.
+
+   https://ubuntu.com/aws/pro
+
+Expanded Security Maintenance for Applications is not enabled.
+
+13 updates can be applied immediately.
+12 of these updates are standard security updates.
+To see these additional updates run: apt list --upgradable
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+
+Last login: Wed Jul 10 18:15:05 2024 from 73.201.221.31
+ubuntu@ip-172-31-1-87:~$ ls -la
+total 36
+drwxr-x--- 5 ubuntu ubuntu 4096 Jul 10 22:09 .
+drwxr-xr-x 4 root   root   4096 Jul 10 18:15 ..
+-rw------- 1 ubuntu ubuntu 1058 Jul 10 22:09 .bash_history
+-rw-r--r-- 1 ubuntu ubuntu  220 Mar 31 08:41 .bash_logout
+-rw-r--r-- 1 ubuntu ubuntu 3771 Mar 31 08:41 .bashrc
+drwx------ 2 ubuntu ubuntu 4096 Jul  9 19:49 .cache
+-rw-r--r-- 1 ubuntu ubuntu  807 Mar 31 08:41 .profile
+drwx------ 2 ubuntu ubuntu 4096 Jul  9 19:19 .ssh
+-rw-r--r-- 1 ubuntu ubuntu    0 Jul 10 18:16 .sudo_as_admin_successful
+drwx------ 3 ubuntu ubuntu 4096 Jul 10 20:39 snap
+ubuntu@ip-172-31-1-87:~$ mkdir .kube
+ubuntu@ip-172-31-1-87:~$ cd .kube
+ubuntu@ip-172-31-1-87:~/.kube$ vi config
+ubuntu@ip-172-31-1-87:~/.kube$ cd ..
+ubuntu@ip-172-31-1-87:~$ cd 
+ubuntu@ip-172-31-1-87:~$ kubectl get pod
+NAME                                      READY   STATUS             RESTARTS         AGE
+hw2-cluster-deployment-746c9b6bf7-8g5zb   0/1     CrashLoopBackOff   39 (83s ago)     170m
+hw2-cluster-deployment-746c9b6bf7-kjd66   0/1     Error              39 (5m14s ago)   170m
+hw2-cluster-deployment-746c9b6bf7-t9w6g   0/1     CrashLoopBackOff   39 (66s ago)     170m
+ubuntu@ip-172-31-1-87:~$ kubectl describe pod hw2-cluster-deployment-746c9b6bf7-8g5zb
+Name:             hw2-cluster-deployment-746c9b6bf7-8g5zb
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             ip-172-31-1-87/172.31.1.87
+Start Time:       Wed, 10 Jul 2024 19:54:24 +0000
+Labels:           pod-template-hash=746c9b6bf7
+                  workload.user.cattle.io/workloadselector=apps.deployment-default-hw2-cluster-deployment
+Annotations:      cni.projectcalico.org/containerID: 2e54e10581fe4aa75240a94ceb812695fdccbed775ca947c539ddb6c633c0a09
+                  cni.projectcalico.org/podIP: 10.42.175.39/32
+                  cni.projectcalico.org/podIPs: 10.42.175.39/32
+Status:           Running
+IP:               10.42.175.39
+IPs:
+  IP:           10.42.175.39
+Controlled By:  ReplicaSet/hw2-cluster-deployment-746c9b6bf7
+Containers:
+  container-0:
+    Container ID:   containerd://e8d6e0a20f460010cd4679eccadd8c67525fb7108f3951427948878b6ed5535f
+    Image:          mengwensu/msu5swe645project2:0.1
+    Image ID:       docker.io/mengwensu/msu5swe645project2@sha256:490d1df4860a1f82e2881ed12f680b953a8dabfe0595f0bd6265a13cef6e13af
+    Port:           8080/TCP
+    Host Port:      0/TCP
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Wed, 10 Jul 2024 22:43:21 +0000
+      Finished:     Wed, 10 Jul 2024 22:43:21 +0000
+    Ready:          False
+    Restart Count:  39
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-vjznl (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             False 
+  ContainersReady   False 
+  PodScheduled      True 
+Volumes:
+  kube-api-access-vjznl:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason          Age                   From     Message
+  ----     ------          ----                  ----     -------
+  Warning  BackOff         41m (x595 over 171m)  kubelet  Back-off restarting failed container container-0 in pod hw2-cluster-deployment-746c9b6bf7-8g5zb_default(a5bded52-006c-4b95-8f42-09e413c21865)
+  Normal   SandboxChanged  18m (x2 over 19m)     kubelet  Pod sandbox changed, it will be killed and re-created.
+  Normal   Pulled          18m                   kubelet  Successfully pulled image "mengwensu/msu5swe645project2:0.1" in 1.721s (1.721s including waiting)
+  Normal   Pulled          18m                   kubelet  Successfully pulled image "mengwensu/msu5swe645project2:0.1" in 374ms (374ms including waiting)
+  Normal   Pulled          17m                   kubelet  Successfully pulled image "mengwensu/msu5swe645project2:0.1" in 267ms (267ms including waiting)
+  Normal   Pulling         17m (x4 over 18m)     kubelet  Pulling image "mengwensu/msu5swe645project2:0.1"
+  Normal   Pulled          17m                   kubelet  Successfully pulled image "mengwensu/msu5swe645project2:0.1" in 173ms (173ms including waiting)
+  Normal   Created         17m (x4 over 18m)     kubelet  Created container container-0
+  Normal   Started         17m (x4 over 18m)     kubelet  Started container container-0
+  Warning  BackOff         4m16s (x66 over 18m)  kubelet  Back-off restarting failed container container-0 in pod hw2-cluster-deployment-746c9b6bf7-8g5zb_default(a5bded52-006c-4b95-8f42-09e413c21865)
+ubuntu@ip-172-31-1-87:~$ ls
+snap
+ubuntu@ip-172-31-1-87:~$ mkdir work
+ubuntu@ip-172-31-1-87:~$ cd work
+ubuntu@ip-172-31-1-87:~/work$ vi Dockerfile
+ubuntu@ip-172-31-1-87:~/work$ vi index.html
+ubuntu@ip-172-31-1-87:~/work$ vi styles.css
+ubuntu@ip-172-31-1-87:~/work$ ls
+Dockerfile  index.html  styles.css
+ubuntu@ip-172-31-1-87:~/work$ vi Dockerfile 
+ubuntu@ip-172-31-1-87:~/work$ docker build -t mengwensu/msu5swe645project2:0.2 .
+
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  27.14kB
+Step 1/4 : FROM nginx:alpine
+alpine: Pulling from library/nginx
+b84a74cde5af: Pull complete 
+ec939b2456d7: Pull complete 
+4838760d22df: Pull complete 
+6b549263cbbd: Pull complete 
+8311a42582b3: Pull complete 
+56051d5ceced: Pull complete 
+86c35ade2ef3: Pull complete 
+0102bea57027: Pull complete 
+Digest: sha256:a45ee5d042aaa9e81e013f97ae40c3dda26fbe98f22b6251acdf28e579560d55
+Status: Downloaded newer image for nginx:alpine
+ ---> 099a2d701db1
+Step 2/4 : COPY index.html /usr/share/nginx/html
+ ---> 782b27bbcb29
+Step 3/4 : EXPOSE 80
+ ---> Running in 7c854c8d6222
+Removing intermediate container 7c854c8d6222
+ ---> 8ff61f122be2
+Step 4/4 : CMD ["nginx", "-g", "daemon off;"]
+ ---> Running in 46d4bceed56b
+Removing intermediate container 46d4bceed56b
+ ---> a46220a1326d
+Successfully built a46220a1326d
+Successfully tagged mengwensu/msu5swe645project2:0.2
+ubuntu@ip-172-31-1-87:~/work$ docker images
+REPOSITORY                     TAG       IMAGE ID       CREATED          SIZE
+mengwensu/msu5swe645project2   0.2       a46220a1326d   12 seconds ago   43.3MB
+nginx                          alpine    099a2d701db1   2 weeks ago      43.2MB
+rancher/rancher                latest    91a26da6b860   3 weeks ago      2.05GB
+ubuntu@ip-172-31-1-87:~/work$ docker run -d -p 8080:80 mengwensu/msu5swe645project2:0.2
+bc8eed2a13dd487735fa9fd0515f872922c195621e69c18014a94a5231b5c56d
+ubuntu@ip-172-31-1-87:~/work$ docker ps
+CONTAINER ID   IMAGE                              COMMAND                  CREATED         STATUS          PORTS                                                                      NAMES
+bc8eed2a13dd   mengwensu/msu5swe645project2:0.2   "/docker-entrypoint.…"   7 seconds ago   Up 6 seconds    0.0.0.0:8080->80/tcp, :::8080->80/tcp                                      amazing_maxwell
+730cfb369de2   rancher/rancher                    "entrypoint.sh"          5 hours ago     Up 32 minutes   0.0.0.0:80->80/tcp, :::80->80/tcp, 0.0.0.0:443->443/tcp, :::443->443/tcp   blissful_grothendieck
+ubuntu@ip-172-31-1-87:~/work$ docker login -u mengwensu
+Password: 
+Error response from daemon: Get "https://registry-1.docker.io/v2/": unauthorized: incorrect username or password
+ubuntu@ip-172-31-1-87:~/work$ docker login -u mengwensu
+Password: 
+Error response from daemon: Get "https://registry-1.docker.io/v2/": unauthorized: incorrect username or password
+ubuntu@ip-172-31-1-87:~/work$ docker login -u mengwensu
+Password: 
+Error response from daemon: Get "https://registry-1.docker.io/v2/": unauthorized: incorrect username or password
+ubuntu@ip-172-31-1-87:~/work$ docker login -u mengwensu
+Password: 
+Error response from daemon: Get "https://registry-1.docker.io/v2/": unauthorized: incorrect username or password
+ubuntu@ip-172-31-1-87:~/work$ docker login -u mengwensu
+Password: 
+Error response from daemon: Get "https://registry-1.docker.io/v2/": unauthorized: incorrect username or password
+ubuntu@ip-172-31-1-87:~/work$ docker login -u mengwensu
+Password: 
+WARNING! Your password will be stored unencrypted in /home/ubuntu/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+ubuntu@ip-172-31-1-87:~/work$ docker push mengwensu/msu5swe645project2:0.2
+The push refers to repository [docker.io/mengwensu/msu5swe645project2]
+7fd892f16d4d: Pushed 
+a51b172d7184: Mounted from library/nginx 
+b7486fe26981: Mounted from library/nginx 
+320c8baef084: Mounted from library/nginx 
+d2cef4a1b224: Mounted from library/nginx 
+4275164ce225: Mounted from library/nginx 
+6e92270dbfe6: Mounted from library/nginx 
+b5d2e1fcf1ad: Mounted from library/nginx 
+af9a70194aa4: Mounted from library/nginx 
+0.2: digest: sha256:6b1b9df0e296e97b1d9ec2a21f5174999eae68db4906d20b25916ada018fc3f0 size: 2197
+ubuntu@ip-172-31-1-87:~/work$ cd
+ubuntu@ip-172-31-1-87:~$ kubectl get deployment
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+hw2-cluster-deployment   0/3     3            0           3h13m
+ubuntu@ip-172-31-1-87:~$ kubectl delete deployment hw2-cluster-deployment
+deployment.apps "hw2-cluster-deployment" deleted
+ubuntu@ip-172-31-1-87:~$ kubectl get deployment
+No resources found in default namespace.
+ubuntu@ip-172-31-1-87:~$ kubectl get pod
+No resources found in default namespace.
+ubuntu@ip-172-31-1-87:~$ kubectl get service
+NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+kubernetes   ClusterIP   10.43.0.1    <none>        443/TCP   4h32m
+ubuntu@ip-172-31-1-87:~$ kubectl get pod
+NAME                                READY   STATUS    RESTARTS   AGE
+hw2-deployment-v2-994895b78-dqpls   1/1     Running   0          24s
+hw2-deployment-v2-994895b78-j4f7z   1/1     Running   0          24s
+hw2-deployment-v2-994895b78-v5dvj   1/1     Running   0          24s
+ubuntu@ip-172-31-1-87:~$ kubectl get service
+NAME                         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+hw2-deployment-v2            ClusterIP   10.43.79.230   <none>        80/TCP         47s
+hw2-deployment-v2-nodeport   NodePort    10.43.144.85   <none>        80:30800/TCP   47s
+kubernetes                   ClusterIP   10.43.0.1      <none>        443/TCP        4h36m
+ubuntu@ip-172-31-1-87:~$ 

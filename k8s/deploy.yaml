@@ -1,0 +1,1 @@
+apiVersion: apps kubectl create -f deployment.yaml
