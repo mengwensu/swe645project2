@@ -4,43 +4,36 @@ pipeline {
         DOCKERHUB_PASS = credentials('docker-pass')
     }
     stages {
-        stage("Checkout Code") {
+        stage("Building the Student Survey Image") {
             steps {
                 script {
                     checkout scm
-                }
-            }
-        }
-        stage("Build Docker Image") {
-            steps {
-                script {
                     def timestamp = currentBuild.startTimeInMillis
+                    sh "echo ${timestamp}"
                     sh "docker login -u mengwensu -p ${DOCKERHUB_PASS}"
-                    def customImage = docker.build("mengwensu/msu5swe645project2:0.2-${timestamp}")
+                    def customImage = docker.build("mengwensu/msu5swe645project2:0.2:${timestamp}")
                 }
             }
         }
-        stage("Push Docker Image") {
+        stage("Pushing Image to DockerHub") {
             steps {
                 script {
                     def timestamp = currentBuild.startTimeInMillis
-                    sh "docker push mengwensu/msu5swe645project2:0.2-${timestamp}"
+                    sh "docker push mengwensu/msu5swe645project2:0.2:${timestamp}"
                 }
             }
         }
-        stage("Deploy to Rancher (Single Pod)") {
+        stage("Deploying to Rancher as single pod") {
             steps {
                 script {
-                    def timestamp = currentBuild.startTimeInMillis
-                    sh "kubectl set image deployment/swe645project2-pipeline swe645project2-pipeline=mengwensu/msu5swe645project2:0.2-${timestamp} -n jenkins-pipeline"
+                    sh "kubectl set image deployment/swe645project2-pipeline swe645project2-pipeline=mengwensu/msu5swe645project2:0.2:${timestamp} -n jenkins-pipeline"
                 }
             }
         }
-        stage("Deploy to Rancher (Load Balancer)") {
+        stage("Deploying to Rancher as with load balancer") {
             steps {
                 script {
-                    def timestamp = currentBuild.startTimeInMillis
-                    sh "kubectl set image deployment/msu5swe645project2-lb msu5swe645project2-lb=mengwensu/msu5swe645project2:0.2-${timestamp} -n jenkins-pipeline"
+                    sh "kubectl set image deployment/msu5swe645project2:0.2-lb msu5swe645project2:0.2-lb=mengwensu/msu5swe645project2:0.2:${timestamp} -n jenkins-pipeline"
                 }
             }
         }
