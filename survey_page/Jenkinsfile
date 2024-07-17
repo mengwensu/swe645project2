@@ -1,48 +1,45 @@
 pipeline {
-    agent any
-    environment {
-        DOCKERHUB_PASS = credentials('docker-pass')
-    }
-    stages {
-        stage("Checkout Code") {
-            steps {
-                script {
-                    checkout scm
-                }
+	agent any
+	environment {
+		DOCKERHUB_PASS = credentials('dockerhub')
+	}
+	stages {
+
+		stage("Check Workspace") {
+            		steps {
+                		sh 'pwd'  // Print current directory (workspace)
+                		sh 'ls'   // List files in current directory (workspace)
+            		}
+        	}
+		stage("Building the Student Survey Image"){
+			steps{
+				script{
+					checkout scm
+					sh 'cp index.html /var/www/html/'
+					sh 'echo ${BUILD_TIMESTAMP}'
+
+					// Use Jenkins credentials binding to securely login to DockerHub
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
+                    sh "echo ${DOCKERHUB_PASS} | docker login -u mengwensu --password-stdin"
+                                
+                    env.BUILD_TIMESTAMP = "${BUILD_TIMESTAMP}".replaceAll(/[^\w.-]/, '-')
+                        def customImageTag = "mengwensu/msu5swe645project2:0.2:${env.BUILD_TIMESTAMP}"
+                            def customImage = docker.build(customImageTag)
+                        }
             }
-        }
-        stage("Build Docker Image") {
-            steps {
-                script {
-                    def timestamp = currentBuild.startTimeInMillis
-                    sh "docker login -u mengwensu -p ${DOCKERHUB_PASS}"
-                    def customImage = docker.build("mengwensu/msu5swe645project2:0.2-${timestamp}")
-                }
-            }
-        }
-        stage("Push Docker Image") {
-            steps {
-                script {
-                    def timestamp = currentBuild.startTimeInMillis
-                    sh "docker push mengwensu/msu5swe645project2:0.2-${timestamp}"
-                }
-            }
-        }
-        stage("Deploy to Rancher as Single Pod") {
-            steps {
-                script {
-                    def timestamp = currentBuild.startTimeInMillis
-                    sh "kubectl set image deployment/hw2-deployment-v2 hw2-deployment-v2=mengwensu/msu5swe645project2:0.2-${timestamp} -n jenkins-pipeline"
-                }
-            }
-        }
-        stage("Deploy to Rancher with Load Balancer") {
-            steps {
-                script {
-                    def timestamp = currentBuild.startTimeInMillis
-                    sh "kubectl set image deployment/hw2-deployment-v2-lb hw2-deployment-v2-lb=mengwensu/msu5swe645project2:0.2-${timestamp} -n jenkins-pipeline"
-                }
-            }
-        }
-    }
+			}
+		}
+		stage("Pushing Image to DockerHub"){
+			steps{
+				script{
+					sh "docker push mengwensu/msu5swe645project2:0.2:${env.BUILD_TIMESTAMP}"
+				}
+			}
+		}
+		stage("Deploying to Rancher as single pod"){
+			steps{
+				sh "kubectl set image deployment/hw2-deployment-v2 container-0=mengwensu/msu5swe645project2:0.2:${env.BUILD_TIMESTAMP}"
+			}
+		}
+	}
 }
