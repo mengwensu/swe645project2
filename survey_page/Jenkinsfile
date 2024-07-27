@@ -1,45 +1,51 @@
 pipeline {
-	agent any
-	environment {
-		DOCKERHUB_PASS = credentials('dockerhub')
-	}
-	stages {
-
-		stage("Check Workspace") {
-            		steps {
-                		sh 'pwd'  // Print current directory (workspace)
-                		sh 'ls'   // List files in current directory (workspace)
-            		}
-        	}
-		stage("Building the Student Survey Image"){
-			steps{
-				script{
-					checkout scm
-					sh 'cp index.html /var/www/html/'
-					sh 'echo ${BUILD_TIMESTAMP}'
-
-					// Use Jenkins credentials binding to securely login to DockerHub
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
-                    sh "echo ${DOCKERHUB_PASS} | docker login -u mengwensu --password-stdin"
-                                
-                    env.BUILD_TIMESTAMP = "${BUILD_TIMESTAMP}".replaceAll(/[^\w.-]/, '-')
-                        def customImageTag = "mengwensu/msu5swe645project2:0.2:${env.BUILD_TIMESTAMP}"
-                            def customImage = docker.build(customImageTag)
-                        }
+    agent any   
+    environment {
+        DOCKERHUB_PASS = credentials('dockerhub')
+        DOCKERHUB_USER = 'mengwensu'
+    }
+    stages {
+        stage("Check Workspace") {
+            steps {
+                sh 'pwd'  // Print current directory (workspace)
+                sh 'ls'   // List files in current directory (workspace)
             }
-			}
-		}
-		stage("Pushing Image to DockerHub"){
-			steps{
-				script{
-					sh "docker push mengwensu/msu5swe645project2:0.2:${env.BUILD_TIMESTAMP}"
-				}
-			}
-		}
-		stage("Deploying to Rancher as single pod"){
-			steps{
-				sh "kubectl set image deployment/hw2-deployment-v2 container-0=mengwensu/msu5swe645project2:0.2:${env.BUILD_TIMESTAMP}"
-			}
-		}
-	}
+        }
+        stage("Building the Student Survey Image"){
+            steps{
+                script{
+                    checkout scm
+                    sh 'cp index.html /var/www/html/'
+                    
+                    // Use Jenkins credentials binding to securely login to DockerHub
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
+                        sh "echo ${DOCKERHUB_PASS} | docker login -u ${DOCKERHUB_USER} --password-stdin"
+                        
+                        // Build Docker image with a tag including timestamp
+                        def timestamp = new Date().format("yyyyMMddHHmmss")
+                        def customImageTag = "mengwensu/msu5swe645project2:0.2-${timestamp}"
+                        env.CUSTOM_IMAGE_TAG = customImageTag // Save tag for later stages
+                        
+                        // Build the Docker image
+                        docker.build(customImageTag)
+                    }
+                }
+            }
+        }
+        stage("Pushing Image to DockerHub"){
+            steps{
+                script{
+                    sh "docker push ${env.CUSTOM_IMAGE_TAG}"
+                }
+            }
+        }
+        stage("Deploying to Rancher as single pod"){
+            steps{
+                script {
+                    // Update the Kubernetes deployment with the new image
+                    sh "kubectl set image deployment/hw2-deployment-v2 container-0=${env.CUSTOM_IMAGE_TAG}"
+                }
+            }
+        }
+    }
 }
