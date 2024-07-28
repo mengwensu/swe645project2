@@ -13,7 +13,7 @@ pipeline {
                     
                     // Use Jenkins credentials binding to securely login to DockerHub
                     withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS_PSW')]) {
-                        sh 'echo "$DOCKERHUB_PASS_PSW" | docker login -u "$DOCKERHUB_USER" --password-stdin'
+                        sh 'echo '$DOCKERHUB_PASS_PSW' | docker login -u '$DOCKERHUB_USER' --password-stdin'
                         
                         env.BUILD_TIMESTAMP = '${BUILD_TIMESTAMP}'.replaceAll(/[^\w.-]/, '-')
                         def customImageTag = 'mengwensu/msu5swe645project2:0.2:${env.BUILD_TIMESTAMP}'
