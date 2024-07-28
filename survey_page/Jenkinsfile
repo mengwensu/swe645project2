@@ -1,7 +1,7 @@
 pipeline {
     agent any   
     environment {
-        BUILD_TIMESTAMP = "${env.BUILD_TIMESTAMP}" // Define environment variable
+        BUILD_TIMESTAMP = "$env.BUILD_TIMESTAMP" // Define environment variable
     }
     stages {
         stage("Building the Student Survey Image"){
@@ -9,15 +9,15 @@ pipeline {
                 script{
                     checkout scm
                     sh 'cp index.html /var/www/html/'
-                    sh 'echo ${BUILD_TIMESTAMP}'
+                    sh 'echo $BUILD_TIMESTAMP'
                     
                     // Use Jenkins credentials binding to securely login to DockerHub
                     withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS_PSW')]) {
                         // Login to Docker without exposing the password in logs
-                        sh 'echo "$DOCKERHUB_PASS_PSW" | docker login -u $DOCKERHUB_USER --password-stdin'
+                        sh 'echo $DOCKERHUB_PASS_PSW | docker login -u $DOCKERHUB_USER --password-stdin'
                         
-                        env.BUILD_TIMESTAMP = "${BUILD_TIMESTAMP}".replaceAll(/[^\w.-]/, '-')
-                        def customImageTag = "mengwensu/msu5swe645project2:0.2:${env.BUILD_TIMESTAMP}"
+                        env.BUILD_TIMESTAMP = "$BUILD_TIMESTAMP".replaceAll(/[^\w.-]/, '-')
+                        def customImageTag = "mengwensu/msu5swe645project2:0.2:$env.BUILD_TIMESTAMP"
                         def customImage = docker.build(customImageTag)
                     }
                 }
@@ -27,14 +27,14 @@ pipeline {
             steps{
                 script{
                     // Push Docker image
-                    sh "docker push mengwensu/msu5swe645project2:0.2:${env.BUILD_TIMESTAMP}"
+                    sh "docker push mengwensu/msu5swe645project2:0.2:$env.BUILD_TIMESTAMP"
                 }
             }
         }
         stage("Deploying to Rancher as single pod"){
             steps{
                 // Deploy to Rancher
-                sh "kubectl set image deployment/hw2-deployment-v2 container-0=mengwensu/msu5swe645project2:0.2:${env.BUILD_TIMESTAMP}"
+                sh "kubectl set image deployment/hw2-deployment-v2 container-0=mengwensu/msu5swe645project2:0.2:$env.BUILD_TIMESTAMP"
             }
         }
     }
