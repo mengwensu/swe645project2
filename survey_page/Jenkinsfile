@@ -14,7 +14,7 @@ pipeline {
                     def buildTimestamp = new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone("UTC"))
 
                     sh "echo ${buildTimestamp}"
-                    sh "docker login -u mengwensu -p ${DOCKERHUB_PASS}"
+                    sh "docker login -u mengwensu -p ${DOCKERHUB_PASS_PSW}"
 
                     def customImage = docker.build("mengwensu/msu5swe645project2:0.2-${buildTimestamp}")
                 }
