@@ -2,29 +2,40 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_PASS = credentials('dockerhub')
-        BUILD_TIMESTAMP = new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone("UTC"))
+        // Note: BUILD_TIMESTAMP can't be directly set here as Groovy code, move it to the script block
     }
     stages {
         stage("Building the Student Survey Image") {
             steps {
                 script {
                     checkout scm
-                    sh 'echo ${BUILD_TIMESTAMP}'
-                    sh 'docker login -u mengwensu -p ${DOCKERHUB_PASS}'
-                    def customImage = docker.build("mengwensu/msu5swe645project2:0.2-${BUILD_TIMESTAMP}")
+
+                    // Set BUILD_TIMESTAMP inside the script block
+                    def buildTimestamp = new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone("UTC"))
+
+                    sh "echo ${buildTimestamp}"
+                    sh "docker login -u mengwensu -p ${DOCKERHUB_PASS}"
+
+                    def customImage = docker.build("mengwensu/msu5swe645project2:0.2-${buildTimestamp}")
                 }
             }
         }
         stage("Pushing image to Dockerhub") {
             steps {
                 script {
-                    sh 'docker push mengwensu/msu5swe645project2:0.2-${BUILD_TIMESTAMP}'
+                    // Use the same buildTimestamp used for building the image
+                    def buildTimestamp = new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone("UTC"))
+                    sh "docker push mengwensu/msu5swe645project2:0.2-${buildTimestamp}"
                 }
             }
         }
         stage("Deploying to Rancher as single pod") {
             steps {
-                sh 'kubectl set image deployment/hw2-deployment-v2 container=hw2=mengwensu/msu5swe645project2:0.2-${BUILD_TIMESTAMP} -n default'
+                script {
+                    // Use the same buildTimestamp used for building the image
+                    def buildTimestamp = new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone("UTC"))
+                    sh "kubectl set image deployment/hw2-deployment-v2 container=hw2=mengwensu/msu5swe645project2:0.2-${buildTimestamp} -n default"
+                }
             }
         }
     }
