@@ -2,7 +2,8 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_PASS = credentials('dockerhub')
-        // Note: BUILD_TIMESTAMP can't be directly set here as Groovy code, move it to the script block
+        def buildTimestamp = new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone("UTC"))
+
     }
     stages {
         stage("Building the Student Survey Image") {
@@ -11,7 +12,6 @@ pipeline {
                     checkout scm
 
                     // Set BUILD_TIMESTAMP inside the script block
-                    def buildTimestamp = new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone("UTC"))
 
                     sh "echo ${buildTimestamp}"
                     sh "docker login -u mengwensu -p ${DOCKERHUB_PASS_PSW}"
@@ -24,7 +24,7 @@ pipeline {
             steps {
                 script {
                     // Use the same buildTimestamp used for building the image
-                    def buildTimestamp = new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone("UTC"))
+                    // def buildTimestamp = new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone("UTC"))
                     sh "docker push mengwensu/msu5swe645project2:0.2-${buildTimestamp}"
                 }
             }
@@ -33,7 +33,7 @@ pipeline {
             steps {
                 script {
                     // Use the same buildTimestamp used for building the image
-                    def buildTimestamp = new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone("UTC"))
+                    // def buildTimestamp = new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone("UTC"))
                     sh "kubectl set image deployment/hw2-deployment-v2 container=hw2=mengwensu/msu5swe645project2:0.2-${buildTimestamp} -n default"
                 }
             }
