@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
     environment {
@@ -11,21 +10,21 @@ pipeline {
                 script {
                     checkout scm
                     sh 'echo ${BUILD_TIMESTAMP}'
-                    sh 'docker login -u mengwensu -p ${DOCKERHUB_PASS_PSW}'
-                    def customImage = docker.build("mengwensu/msu5swe645project2:0.2:${BUILD_TIMESTAMP}")
+                    sh 'docker login -u mengwensu -p ${DOCKERHUB_PASS}'
+                    def customImage = docker.build("mengwensu/msu5swe645project2:0.2-${BUILD_TIMESTAMP}")
                 }
             }
         }
         stage("Pushing image to Dockerhub") {
             steps {
                 script {
-                    sh 'docker push mengwensu/msu5swe645project2:0.2:${BUILD_TIMESTAMP}'
+                    sh 'docker push mengwensu/msu5swe645project2:0.2-${BUILD_TIMESTAMP}'
                 }
             }
         }
         stage("Deploying to Rancher as single pod") {
             steps {
-                sh 'kubectl set image deployment/hw2-deployment-v2 container=hw2=mengwensu/msu5swe645project2:0.2:${BUILD_TIMESTAMP} -n default'
+                sh 'kubectl set image deployment/hw2-deployment-v2 container=hw2=mengwensu/msu5swe645project2:0.2-${BUILD_TIMESTAMP} -n default'
             }
         }
     }
