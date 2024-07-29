@@ -2,8 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_PASS = credentials('dockerhub')
-        def buildTimestamp = new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone("UTC"))
-
+        BUILD_TIMESTAMP = new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone("UTC")).replaceAll(/[^a-zA-Z0-9._-]/, '')
     }
     stages {
         stage("Building the Student Survey Image") {
@@ -11,30 +10,27 @@ pipeline {
                 script {
                     checkout scm
 
-                    // Set BUILD_TIMESTAMP inside the script block
+                    // Use sanitized BUILD_TIMESTAMP from environment
+                    sh "echo ${BUILD_TIMESTAMP}"
+                    sh "docker login -u mengwensu -p ${DOCKERHUB_PASS}"
 
-                    sh "echo ${buildTimestamp}"
-                    sh "docker login -u mengwensu -p ${DOCKERHUB_PASS_PSW}"
-
-                    def customImage = docker.build("mengwensu/msu5swe645project2:0.2-${buildTimestamp}")
+                    def customImage = docker.build("mengwensu/msu5swe645project2:0.2-${env.BUILD_TIMESTAMP}")
                 }
             }
         }
         stage("Pushing image to Dockerhub") {
             steps {
                 script {
-                    // Use the same buildTimestamp used for building the image
-                    // def buildTimestamp = new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone("UTC"))
-                    sh "docker push mengwensu/msu5swe645project2:0.2-${buildTimestamp}"
+                    // Use sanitized BUILD_TIMESTAMP from environment
+                    sh "docker push mengwensu/msu5swe645project2:0.2-${env.BUILD_TIMESTAMP}"
                 }
             }
         }
         stage("Deploying to Rancher as single pod") {
             steps {
                 script {
-                    // Use the same buildTimestamp used for building the image
-                    // def buildTimestamp = new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone("UTC"))
-                    sh "kubectl set image deployment/hw2-deployment-v2 container=hw2=mengwensu/msu5swe645project2:0.2-${buildTimestamp} -n default"
+                    // Use sanitized BUILD_TIMESTAMP from environment
+                    sh "kubectl set image deployment/hw2-deployment-v2 container=hw2=mengwensu/msu5swe645project2:0.2-${env.BUILD_TIMESTAMP} -n default"
                 }
             }
         }
