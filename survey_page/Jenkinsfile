@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_PASS = credentials('dockerhub')
-        BUILD_TIMESTAMP = new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone("UTC")).replaceAll(/[^a-zA-Z0-9._-]/, '')
+        BUILD_TIMESTAMP = new Date().format("yyyyMMdd-HHmmss")
     }
     stages {
         stage("Building the Student Survey Image") {
@@ -14,7 +14,7 @@ pipeline {
                     sh "echo ${BUILD_TIMESTAMP}"
                     sh "docker login -u mengwensu -p ${DOCKERHUB_PASS}"
 
-                    def customImage = docker.build("mengwensu/msu5swe645project2:0.2-${env.BUILD_TIMESTAMP}")
+                    def customImage = docker.build("mengwensu/msu5swe645project2:0.2:${env.BUILD_TIMESTAMP}")
                 }
             }
         }
@@ -22,7 +22,7 @@ pipeline {
             steps {
                 script {
                     // Use sanitized BUILD_TIMESTAMP from environment
-                    sh "docker push mengwensu/msu5swe645project2:0.2-${env.BUILD_TIMESTAMP}"
+                    sh "docker push mengwensu/msu5swe645project2:0.2:${env.BUILD_TIMESTAMP}"
                 }
             }
         }
@@ -30,9 +30,58 @@ pipeline {
             steps {
                 script {
                     // Use sanitized BUILD_TIMESTAMP from environment
-                    sh "kubectl set image deployment/hw2-deployment-v2 container=hw2=mengwensu/msu5swe645project2:0.2-${env.BUILD_TIMESTAMP} -n default"
+                    sh "kubectl set image deployment/hw2-deployment-v2 container=hw2=mengwensu/msu5swe645project2:0.2:${env.BUILD_TIMESTAMP} -n default"
                 }
             }
         }
     }
 }
+
+
+// pipeline {
+// 	agent any
+// 	environment {
+// 		DOCKERHUB_PASS = credentials('dockerhub')
+// 	}
+// 	stages {
+
+// 		stage("Check Workspace") {
+//             		steps {
+//                 		sh 'pwd'  // Print current directory (workspace)
+//                 		sh 'ls'   // List files in current directory (workspace)
+//             		}
+//         	}
+// 		stage("Building the Student Survey Image"){
+// 			steps{
+// 				script{
+// 					checkout scm
+// 					sh 'cp index.html /var/www/html/'
+// 					sh 'echo ${BUILD_TIMESTAMP}'
+
+// 					// Use Jenkins credentials binding to securely login to DockerHub
+// 			                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS_PSW')]) {
+// 			                	//sh "docker login -u johnstephengutam -p ${DOCKERHUB_PASS}"
+// 						sh "echo ${DOCKERHUB_PASS} | docker login -u mengwensu --password-stdin"
+			                        
+// 						env.BUILD_TIMESTAMP = "${BUILD_TIMESTAMP}".replaceAll(/[^\w.-]/, '-')
+//            				 	def customImageTag = "mengwensu/msu5swe645project2:0.2:${env.BUILD_TIMESTAMP}"
+//             					def customImage = docker.build(customImageTag)
+// 			                }
+// 				}
+// 			}
+// 		}
+// 		stage("Pushing Image to DockerHub"){
+// 			steps{
+// 				script{
+// 					sh "docker push mengwensu/msu5swe645project2:0.2:${env.BUILD_TIMESTAMP}"
+// 				}
+// 			}
+// 		}
+// 		stage("Deploying to Rancher as single pod"){
+// 			steps{
+// 				sh "kubectl set image deployment/hw2-deployment-v2 container-0=mengwensu/msu5swe645project2:0.2:${env.BUILD_TIMESTAMP}"
+// 			}
+// 		}
+// 	}
+// }
+
